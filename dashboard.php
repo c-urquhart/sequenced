@@ -28,6 +28,28 @@ while ($row = $result->fetch_assoc())
     $tra = $row['tra'];
 }
 
+// retrieve data on changers vs remainers
+$query = 'select * from change_vs_remain';
+$result = $connection->query($query);
+while ($row = $result->fetch_assoc())
+{
+    $change = $row['changers'];
+    $remain = $row['remainers'];
+}
+
+// retrieve data on where those that changed are now
+$query = "select count(user_id) as count, new_value, CASE WHEN new_value = 1 THEN 'Trait Analysis' ELSE 'Genetic Breakdown' end item from (select max(id), user_id, new_value from settingchange where rule_id = 1 group by user_id) as t group by new_value";
+$result = $connection->query($query);
+$i = 0;
+$item = array();
+$count = array();
+while ($row = $result->fetch_assoc())
+{
+    $item[$i] = $row['item'];
+  	$count[$i] = $row['count'];
+    $i = $i + 1;
+}
+
 // block to handle user deletion and deletion of dependencies with user IDs
 if (isset($_POST['deleteId']))
 {
@@ -43,6 +65,9 @@ else
 {
     $current = 'dashboard';
 }
+
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -50,6 +75,8 @@ else
 	<title>Dashboard</title>
 	<link rel="stylesheet" href="style.css">
 	<script src="tabSwitch.js"></script>
+     
+     <!-- the instruction on using google charts was sourced from google's developer documentation -->
      
          <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -66,8 +93,8 @@ else
 
         var options = {
           title: 'Number of Users per Genomic Data Usage Setting'
-          , 'width':900
-          , 'height':700
+          , 'width':500
+          , 'height':500
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -76,18 +103,75 @@ else
       }
     </script>
      
+     <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChangeChart);
+
+      function drawChangeChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Party', 'Number of People'],
+          ['Remainers',<?PHP echo $remain; ?>],
+          ['Changers',<?PHP echo $change; ?>]
+        ]);
+
+        var options = {
+          title: 'Users who Changed Settings vs Those Who Never Did'
+          , 'width':500
+          , 'height':500
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('changepiechart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+     <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChangeStatusChart);
+
+      function drawChangeStatusChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Option', 'Number of People'],
+          <?PHP 
+			$i = 0;
+			while ($i < count($item)-1){
+             echo "['".$item[$i]."','".$count[$i]."'],";
+              $i = $i + 1;
+            }
+			echo "['".$item[$i]."','".$count[$i]."']";
+			?>
+        ]);
+
+        var options = {
+          title: 'Where users who changed currently are'
+          , 'width':500
+          , 'height':500
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('changestatuschart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+     
    </head>
    <body>
+     <div id="logoutBtn">
       <form action= "<?php $_PHP_SELF ?>" method = "post">
-         <input type = "submit" id="logout" name="logout" value="Log out"/>
+         <input type = "submit" id="logout" name="logout" value="Log out" class="logoutBtn"/>
       </form>
+     </div>
       <!-- tutorial on tabs within a HTML page sourced from https://www.w3schools.com/howto/howto_js_tabs.asp -->
       <div class="tab">
          <button class="tablinks" onclick="tabSwitch(event, 'dashboard')">Dashboard</button>
          <button class="tablinks" onclick="tabSwitch(event, 'users')">User Management</button>
       </div>
       <div id="dashboard" class="tabcontent">
-             <div id="piechart"></div>
+             <div id="piechart" class="dashboardChart"></div>
+        <div id="changepiechart" class="dashboardChart"></div>
+        <div id="changestatuschart" class="dashboardChart"></div>
      </div>
       <div id="users" class="tabcontent">
         <?PHP

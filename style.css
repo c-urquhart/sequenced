@@ -37,37 +37,83 @@ body{
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
+  margin-bottom: 1%;
+  width: 85%
 }
 
-/* Style the buttons that are used to open the tab content */
 .tab button {
-  background-color: inherit;
+
   float: left;
   border: none;
   outline: none;
   cursor: pointer;
   padding: 14px 16px;
-  transition: 0.3s;
-  margin: auto;
 }
 
-/* Change background color of buttons on hover */
 .tab button:hover {
   background-color: #ddd;
 }
 
-/* Create an active/current tablink class */
 .tab button.active {
   background-color: #ccc;
 }
 
-/* Style the tab content */
 .tabcontent {
   display: none;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-top: none;
 }
 
+th, td {
+  border: 2px solid black;
+  text-align: center;
+}
 
+th{
+  background-color:#00D4FF;
+}
 
+table{
+  width: 50%;
+  border-collapse: collapse;
+  margin: auto;
+}
+
+#logoutBtn{
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 15%;
+  height:20%;
+}
+
+.logoutBtn{
+  border: none;
+  padding: 20px 30px;
+  width: 100%;
+  border-radius: 25px;
+  font-size: 2em;
+}
+
+#homecontent{
+  width: 80%;
+  margin: auto;
+}
+
+#homeheading{
+  margin: auto;
+  text-align: center;
+}
+
+#toggleToTraits, #toggleToBreakdown{
+  border: none;
+  padding: 20px 30px;
+  border-radius: 25px;
+  font-size: 2em;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.dashboardChart{
+ float: left; 
+  background-color: aqua;
+}
