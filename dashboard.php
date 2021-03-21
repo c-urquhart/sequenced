@@ -57,7 +57,7 @@
               if($row['isAdmin'] == 0){
                 $admin = 'No';
               }else{
-                $admin = 'Nes';
+                $admin = 'Yes';
               }
     		  echo '<tr><td>'.$row["username"].'</td><td>'.$row["email"].'</td><td>'.$admin.'</td><td><form action="dashboard.php" method = "post"><button value="'.$row["id"].'" name="deleteId">Delete</button></form></td>';
   			}
