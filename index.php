@@ -1,5 +1,14 @@
 <?PHP
 	session_start();
+
+	// handler to make sure logged in users don't see the landing pages
+	if($_SESSION['loggedin'] == true){
+      if($_SESSION['isAdmin'] == 1){
+        header('Location: dashboard.php');
+      }else{
+        header('Location: home.php');
+      }
+    };
 ?>
 <!DOCTYPE html>
 <html>
