@@ -1,0 +1,2 @@
+CREATE VIEW CHANGED_USER_STATUS as
+	select count(user_id) as count, new_value, CASE WHEN new_value = 1 THEN 'Trait Analysis' ELSE 'Genetic Breakdown' end item from (select max(id), user_id, new_value from settingchange where rule_id = 1 group by user_id) as t group by new_value

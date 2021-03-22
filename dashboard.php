@@ -38,17 +38,15 @@ while ($row = $result->fetch_assoc())
 }
 
 // retrieve data on where those that changed are now
-$query = "select count(user_id) as count, new_value, CASE WHEN new_value = 1 THEN 'Trait Analysis' ELSE 'Genetic Breakdown' end item from (select max(id), user_id, new_value from settingchange where rule_id = 1 group by user_id) as t group by new_value";
+$query = "select * from CHANGED_USER_STATUS";
 $result = $connection->query($query);
-$i = 0;
-$item = array();
-$count = array();
 while ($row = $result->fetch_assoc())
 {
-    $item[$i] = $row['item'];
-  	$count[$i] = $row['count'];
-    $i = $i + 1;
+    $changedCurrentGBD =  $row['gbd'];
+    $changedCurrentTRA = $row['tra'];
 }
+
+
 
 // block to handle user deletion and deletion of dependencies with user IDs
 if (isset($_POST['deleteId']))
@@ -134,14 +132,8 @@ else
 
         var data = google.visualization.arrayToDataTable([
           ['Option', 'Number of People'],
-          <?PHP 
-			$i = 0;
-			while ($i < count($item)-1){
-             echo "['".$item[$i]."','".$count[$i]."'],";
-              $i = $i + 1;
-            }
-			echo "['".$item[$i]."','".$count[$i]."']";
-			?>
+		  ['Genetic Breakdown', <?PHP echo $changedCurrentGBD;?>],
+          ['Trait Analysis', <?PHP echo $changedCurrentTRA;?>]
         ]);
 
         var options = {
